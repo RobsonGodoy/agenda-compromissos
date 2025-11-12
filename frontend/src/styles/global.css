@@ -349,6 +349,17 @@ body {
   }
 }
 
+@keyframes datetimePickerMobile {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
 .datetime-picker-header {
   display: flex;
   justify-content: space-between;
@@ -1150,6 +1161,7 @@ body {
     max-width: 90vw;
     max-height: 90vh;
     overflow-y: auto;
+    animation: datetimePickerMobile 0.2s ease;
   }
 
   .datetime-picker-time {
