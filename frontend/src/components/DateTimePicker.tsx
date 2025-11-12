@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useId } from 'react';
 
 interface DateTimePickerProps {
   value: string;
@@ -25,6 +25,10 @@ export const DateTimePicker = ({
     value ? new Date(value) : new Date()
   );
   const containerRef = useRef<HTMLDivElement>(null);
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+  const hourSelectId = `${inputId}-hour`;
+  const minuteSelectId = `${inputId}-minute`;
 
   const monthNames = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -170,7 +174,7 @@ export const DateTimePicker = ({
     <div className="datetime-picker" ref={containerRef}>
       <input
         type="text"
-        id={id}
+        id={inputId}
         name={name}
         value={formatDisplayDate(value ? new Date(value) : null)}
         onClick={() => !disabled && setIsOpen(!isOpen)}
@@ -203,57 +207,70 @@ export const DateTimePicker = ({
             📅 Hoje
           </button>
 
-          <div className="datetime-picker-calendar">
-            {daysOfWeek.map((day) => (
-              <div key={day} className="datetime-picker-day-header">
-                {day}
-              </div>
-            ))}
+          <div className="datetime-picker-body">
+            <div className="datetime-picker-calendar">
+              {daysOfWeek.map((day) => (
+                <div key={day} className="datetime-picker-day-header">
+                  {day}
+                </div>
+              ))}
 
-            {calendarDays.map((day, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => day.isCurrentMonth && handleDateSelect(day.date)}
-                className={`datetime-picker-day ${!day.isCurrentMonth ? 'other-month' : ''} ${day.isSelected ? 'selected' : ''} ${day.isToday ? 'today' : ''}`}
-                disabled={!day.isCurrentMonth}
-              >
-                {day.date.getDate()}
-              </button>
-            ))}
-          </div>
+              {calendarDays.map((dayItem) => {
+                const classNames = ['datetime-picker-day'];
+                if (!dayItem.isCurrentMonth) classNames.push('other-month');
+                if (dayItem.isSelected) classNames.push('selected');
+                if (dayItem.isToday) classNames.push('today');
 
-          <div className="datetime-picker-time">
-            <div className="datetime-picker-time-group">
-              <label>Hora:</label>
-              <select
-                value={selectedDate.getHours()}
-                onChange={(e) => handleTimeChange('hour', parseInt(e.target.value))}
-                className="datetime-picker-select"
-              >
-                {hours.map((hour) => (
-                  <option key={hour} value={hour}>
-                    {String(hour).padStart(2, '0')}
-                  </option>
-                ))}
-              </select>
+                return (
+                  <button
+                    key={dayItem.date.toISOString()}
+                    type="button"
+                    onClick={() => {
+                      if (dayItem.isCurrentMonth) {
+                        handleDateSelect(dayItem.date);
+                      }
+                    }}
+                    className={classNames.join(' ')}
+                    disabled={!dayItem.isCurrentMonth}
+                  >
+                    {dayItem.date.getDate()}
+                  </button>
+                );
+              })}
             </div>
 
-            <span className="datetime-picker-time-separator">:</span>
+            <div className="datetime-picker-time">
+              <div className="datetime-picker-time-group">
+                <label htmlFor={hourSelectId}>Hora</label>
+                <select
+                  id={hourSelectId}
+                  value={selectedDate.getHours()}
+                  onChange={(e) => handleTimeChange('hour', Number.parseInt(e.target.value, 10))}
+                  className="datetime-picker-select"
+                >
+                  {hours.map((hour) => (
+                    <option key={hour} value={hour}>
+                      {String(hour).padStart(2, '0')}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div className="datetime-picker-time-group">
-              <label>Minuto:</label>
-              <select
-                value={Math.floor(selectedDate.getMinutes() / 5) * 5}
-                onChange={(e) => handleTimeChange('minute', parseInt(e.target.value))}
-                className="datetime-picker-select"
-              >
-                {minutes.map((minute) => (
-                  <option key={minute} value={minute}>
-                    {String(minute).padStart(2, '0')}
-                  </option>
-                ))}
-              </select>
+              <div className="datetime-picker-time-group">
+                <label htmlFor={minuteSelectId}>Minuto</label>
+                <select
+                  id={minuteSelectId}
+                  value={Math.floor(selectedDate.getMinutes() / 5) * 5}
+                  onChange={(e) => handleTimeChange('minute', Number.parseInt(e.target.value, 10))}
+                  className="datetime-picker-select"
+                >
+                  {minutes.map((minute) => (
+                    <option key={minute} value={minute}>
+                      {String(minute).padStart(2, '0')}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
 
