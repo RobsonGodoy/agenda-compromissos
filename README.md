@@ -124,11 +124,11 @@ docker-compose up --build
 3. **Acesse a aplicação**
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3000
-- MySQL: localhost:3307
+- MySQL: localhost:3306
 - Credenciais padrão do MySQL (definidas no compose/Dockerfile):
   - Usuário: root
   - Senha: 123456
-  - `DATABASE_URL`: mysql://root:123456@mysql:3307/agenda_db
+  - `DATABASE_URL`: mysql://root:123456@mysql:3306/agenda_db
 
 > Caso deseje alterar a URL do banco, edite a variável `DATABASE_URL` em `docker-compose.yml` ou passe `--build-arg DATABASE_URL=...` ao construir o serviço `backend`.
 
@@ -149,7 +149,7 @@ docker-compose exec backend npx prisma migrate deploy
 
 # Acessar MySQL
 docker-compose exec mysql mysql -u root -p agenda_db
-# Senha: root
+# Senha: 123456
 ```
 
 ## 💻 Rodando Localmente (Sem Docker)
@@ -169,7 +169,7 @@ npm install
 
 2. **Configurar variáveis de ambiente**
 ```bash
-DATABASE_URL=mysql://root:123456@localhost:3307/agenda_db
+DATABASE_URL=mysql://root:123456@localhost:3306/agenda_db
 ```
 
 3. **Executar migrations**
