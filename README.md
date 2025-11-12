@@ -125,6 +125,12 @@ docker-compose up --build
 - Frontend: http://localhost:5173
 - Backend: http://localhost:3000
 - MySQL: localhost:3307
+- Credenciais padrão do MySQL (definidas no compose/Dockerfile):
+  - Usuário: root
+  - Senha: 123456
+  - `DATABASE_URL`: mysql://root:123456@mysql:3307/agenda_db
+
+> Caso deseje alterar a URL do banco, edite a variável `DATABASE_URL` em `docker-compose.yml` ou passe `--build-arg DATABASE_URL=...` ao construir o serviço `backend`.
 
 ### Comandos úteis do Docker
 
@@ -163,8 +169,7 @@ npm install
 
 2. **Configurar variáveis de ambiente**
 ```bash
-# Criar arquivo .env baseado no .env.example
-# Ajustar DATABASE_URL conforme seu MySQL local
+DATABASE_URL=mysql://root:123456@localhost:3307/agenda_db
 ```
 
 3. **Executar migrations**

@@ -12,6 +12,10 @@ RUN npm ci
 # Copiar código fonte
 COPY . .
 
+# Definir DATABASE_URL padrão para builds públicos (pode ser sobrescrito via --build-arg)
+ARG DATABASE_URL=mysql://root:123456@mysql:3307/agenda_db
+ENV DATABASE_URL=${DATABASE_URL}
+
 # Gerar Prisma Client
 RUN npx prisma generate
 

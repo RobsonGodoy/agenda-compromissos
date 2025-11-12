@@ -23,7 +23,10 @@ services:
       - agenda-network
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        DATABASE_URL: mysql://root:123456@mysql:3307/agenda_db
     container_name: agenda-backend
     restart: always
     ports:
